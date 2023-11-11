@@ -1,6 +1,8 @@
 import { user, getToken, goToPage } from "../index.js";
 import { uploadImage, addPost } from "../api.js";
 import { POSTS_PAGE, LOADING_PAGE } from "../routes.js";
+import { renderHeaderComponent } from "./header-component.js";
+
 
 export function renderAddPostPageComponent({ appEl }) {
   let token = getToken();
@@ -8,21 +10,8 @@ export function renderAddPostPageComponent({ appEl }) {
   const render = () => {
     // TODO: Реализовать страницу добавления поста
     const appHtml = `
-            <div class="page-header">
-            <h1 class="logo">instapro</h1>
-            <button class="header-button add-or-login-button">
-                ${
-                user
-                ? `<div title="Добавить пост" class="add-post-sign"></div>`
-                : "Войти"
-                }
-            </button>
-            ${
-            user
-            ? `<button title="${user.name}" class="header-button logout-button">Выйти</button>`
-            : ""
-            }
-        </div>
+      <div class="page-container">
+        <div class="header-container"></div>
         <div class="form">
             <h3 class="form-title">Добавить пост</h3>
             <div class="form-inputs">
@@ -41,9 +30,14 @@ export function renderAddPostPageComponent({ appEl }) {
                 </label>
                 <button class="button" id="add-button">Добавить</button>
             </div>
-        </div>`;
+        </div>
+      </div>`;
 
     appEl.innerHTML = appHtml;
+
+    renderHeaderComponent({
+      element: document.querySelector(".header-container"),
+    });
 
     document.getElementById("add-button").addEventListener("click", () => {
       const textInput = document.querySelector(".textarea").value;

@@ -1,12 +1,13 @@
 import { USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
-import { posts, goToPage } from "../index.js";
+import { posts, goToPage, getToken } from "../index.js";
+import { initButtonLikeListeners } from './like-post.js'
 // import { format } from "date-fns";
 
 export const renderPosts = ({posts}) => {
 
     const postsHTML = posts
-        .map((post) => {
+        .map((post, index) => {
             // const correctDate = format(
             //     new Date(comment.date),
             //     "yyyy-MM-dd hh.mm.ss",
@@ -22,7 +23,7 @@ export const renderPosts = ({posts}) => {
                 <img class="post-image" src="${post.imageUrl}">
             </div>
             <div class="post-likes">
-                <button data-post-id="{post.id}" class="like-button">
+                <button data-post-id="{post.id}" data-index="${index}" class="like-button">
                     <img src="./assets/images/like-active.svg">
                 </button>
                 <p class="post-likes-text">
@@ -45,8 +46,7 @@ export const renderPosts = ({posts}) => {
 
 
 export function renderPostsPageComponent({ appEl }) {
-  // TODO: реализовать рендер постов из api
-  console.log("Актуальный список постов:", posts);
+
 
   const postsList = renderPosts({posts});
   /**
@@ -66,6 +66,10 @@ export function renderPostsPageComponent({ appEl }) {
   renderHeaderComponent({
     element: document.querySelector(".header-container"),
   });
+
+  let token = getToken();
+
+  initButtonLikeListeners({ token, posts, appEl });
 
   for (let userEl of document.querySelectorAll(".post-header")) {
     userEl.addEventListener("click", () => {
