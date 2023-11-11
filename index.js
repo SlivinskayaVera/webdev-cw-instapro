@@ -15,12 +15,13 @@ import {
   removeUserFromLocalStorage,
   saveUserToLocalStorage,
 } from "./helpers.js";
+import { renderUserPage } from './components/page-of-user.js'
 
 export let user = getUserFromLocalStorage();
 export let page = null;
 export let posts = [];
 
-const getToken = () => {
+export const getToken = () => {
   const token = user ? `Bearer ${user.token}` : undefined;
   return token;
 };
@@ -67,7 +68,11 @@ export const goToPage = (newPage, data) => {
     }
 
     if (newPage === USER_POSTS_PAGE) {
+
       // TODO: реализовать получение постов юзера из API
+  const appEl = document.getElementById("app");
+
+      renderUserPage( { appEl, user } );
       console.log("Открываю страницу пользователя: ", data.userId);
       page = USER_POSTS_PAGE;
       posts = [];
@@ -107,15 +112,9 @@ const renderApp = () => {
   }
 
   if (page === ADD_POSTS_PAGE) {
-    return renderAddPostPageComponent({
-      appEl,
-      onAddPostClick({ description, imageUrl }) {
-        // TODO: реализовать добавление поста в API
-        console.log("Добавляю пост...", { description, imageUrl });
-        goToPage(POSTS_PAGE);
-      },
-    });
-  }
+    return renderAddPostPageComponent({ appEl });
+    };
+
 
   if (page === POSTS_PAGE) {
     return renderPostsPageComponent({
@@ -128,6 +127,6 @@ const renderApp = () => {
     appEl.innerHTML = "Здесь будет страница фотографий пользователя";
     return;
   }
-};
+}
 
 goToPage(POSTS_PAGE);
