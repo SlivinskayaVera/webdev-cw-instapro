@@ -1,24 +1,43 @@
 import { USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
-import { posts, goToPage, getToken } from "../index.js";
+import { posts, goToPage, getToken, user } from "../index.js";
 import { initButtonLikeListeners } from "./like-post.js";
 import { formatDistanceToNow } from "date-fns";
-import { ru } from 'date-fns/locale';
+import { ru } from "date-fns/locale";
+
+
+const getWhoLiked = (user, post) => {
+  let likersList = [];
+  const namesLikers = post.likes;
+  namesLikers.forEach((element) => likersList.push(element.name));
+
+  if (!user) {
+    return `${
+      likersList.length > 0
+        ? likersList.length > 1
+          ? `${likersList[0]} и еще ${likersList.length - 1}`
+          : likersList
+        : 0
+    }`;
+  } else {
+    return `${
+      likersList.length > 0
+        ? likersList.length > 1
+          ? `${user.name} и еще ${likersList.length - 1}`
+          : likersList
+        : 0
+    }`;
+  }
+};
 
 export const renderPosts = ({ posts }) => {
   const postsHTML = posts
     .map((post, index) => {
+      const correctDate = formatDistanceToNow(new Date(post.createdAt), {
+        locale: ru,
+      });
 
-      console.log(post.createdAt);
-
-      const correctDate = formatDistanceToNow(
-          new Date(post.createdAt), {locale: ru}
-      );
-
-      let likersList = [];
-      const namesLikers = post.likes;
-      namesLikers.forEach(element => likersList.push(element.name));
-      const listFromArray = likersList.join(', ');
+      let names = getWhoLiked(user, post);
 
       return `<li class="post">
             <div class="post-header" data-user-id="${post.user.id}">
@@ -33,7 +52,7 @@ export const renderPosts = ({ posts }) => {
                     <img src="./assets/images/like-active.svg">
                 </button>
                 <p class="post-likes-text">
-                    Нравится: <strong>${listFromArray.length > 0 ? listFromArray : 0}</strong>
+                    Нравится: <strong>${names}</strong>
                 </p>
             </div>
             <p class="post-text">
@@ -53,26 +72,22 @@ export const renderPosts = ({ posts }) => {
 export const renderPostsUser = ({ posts }) => {
   const postsHTML = posts
     .map((post, index) => {
-      
-      const correctDate = formatDistanceToNow(
-        new Date(post.createdAt), {locale: ru}
-    );
+      const correctDate = formatDistanceToNow(new Date(post.createdAt), {
+        locale: ru,
+      });
 
-      let likersList = [];
-      const namesLikers = post.likes;
-      namesLikers.forEach(element => likersList.push(element.name));
-      const listFromArray = likersList.join(', ');
+      let names = getWhoLiked(user, post);
 
       return `<li class="post">
           <div class="post-image-container">
               <img class="post-image" src="${post.imageUrl}">
           </div>
-          <div class="post-likes">
-              <button data-post-id="{post.id}" data-index="${index}" class="like-button">
+          <div class="post-likes" data-user-id="${post.user.id}">
+              <button data-post-id="{post.id}" data-user-id="${post.user.id}" data-index="${index}" class="like-button">
                   <img src="./assets/images/like-active.svg">
               </button>
               <p class="post-likes-text">
-                  Нравится: <strong>${listFromArray.length > 0 ? listFromArray : 0}</strong>
+                  Нравится: <strong>${names}</strong>
               </p>
           </div>
           <p class="post-text">
@@ -88,7 +103,6 @@ export const renderPostsUser = ({ posts }) => {
 
   return postsHTML;
 };
-
 
 export function renderPostsPageComponent({ appEl }) {
   const postsList = renderPosts({ posts });

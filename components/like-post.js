@@ -10,23 +10,26 @@ export const initButtonLikeListeners = ({ token, posts, flagPosts }) => {
       event.stopPropagation();
 
       if (!token) return;
-      console.log('object');
 
       let index = buttonLikeElement.dataset.index;
+      let data = buttonLikeElement.dataset.userId;
+
       const post = posts[index];
-      console.log(post.isLiked);
       const id = post.id;
 
       if (post.isLiked === true) {
         setDislike({ id, token }).then(() => {
-            flagPosts ? goToPage(USER_POSTS_PAGE) : goToPage(POSTS_PAGE);
-        //   goToPage(POSTS_PAGE);
+          flagPosts
+            ? goToPage(USER_POSTS_PAGE, {
+                userId: data,
+              })
+            : goToPage(POSTS_PAGE);
         });
       } else {
         setLike({ id, token }).then(() => {
-            flagPosts ? goToPage(USER_POSTS_PAGE) : goToPage(POSTS_PAGE);
-
-        //   goToPage(POSTS_PAGE);
+          flagPosts ? goToPage(USER_POSTS_PAGE, {
+            userId: data,
+          }) : goToPage(POSTS_PAGE);
         });
       }
     });

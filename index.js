@@ -69,10 +69,9 @@ export const goToPage = (newPage, data) => {
 
     if (newPage === USER_POSTS_PAGE) {
 
-      // TODO: реализовать получение постов юзера из API
       const appEl = document.getElementById("app");
 
-      renderUserPage( { appEl, userId: data.userId } );
+      renderUserPage( { appEl, userId: data.userId} );
       console.log("Открываю страницу пользователя: ", data.userId);
       page = USER_POSTS_PAGE;
       posts = [];
