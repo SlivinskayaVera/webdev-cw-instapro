@@ -2,15 +2,18 @@ import { USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
 import { posts, goToPage, getToken } from "../index.js";
 import { initButtonLikeListeners } from "./like-post.js";
-// import { format } from "date-fns";
+import { formatDistanceToNow } from "date-fns";
+import { ru } from 'date-fns/locale';
 
 export const renderPosts = ({ posts }) => {
   const postsHTML = posts
     .map((post, index) => {
-      // const correctDate = format(
-      //     new Date(comment.date),
-      //     "yyyy-MM-dd hh.mm.ss",
-      // );
+
+      console.log(post.createdAt);
+
+      const correctDate = formatDistanceToNow(
+          new Date(post.createdAt), {locale: ru}
+      );
 
       let likersList = [];
       const namesLikers = post.likes;
@@ -38,7 +41,7 @@ export const renderPosts = ({ posts }) => {
                 ${post.description}
             </p>
             <p class="post-date">
-                19 минут назад
+          ${correctDate}
             </p>
         </li>`;
     })
@@ -50,10 +53,10 @@ export const renderPosts = ({ posts }) => {
 export const renderPostsUser = ({ posts }) => {
   const postsHTML = posts
     .map((post, index) => {
-      // const correctDate = format(
-      //     new Date(comment.date),
-      //     "yyyy-MM-dd hh.mm.ss",
-      // );
+      
+      const correctDate = formatDistanceToNow(
+        new Date(post.createdAt), {locale: ru}
+    );
 
       let likersList = [];
       const namesLikers = post.likes;
@@ -77,7 +80,7 @@ export const renderPostsUser = ({ posts }) => {
               ${post.description}
           </p>
           <p class="post-date">
-              19 минут назад
+          ${correctDate}
           </p>
       </li>`;
     })
