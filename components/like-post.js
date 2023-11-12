@@ -1,5 +1,5 @@
 import { setLike, setDislike } from "../api.js";
-import { POSTS_PAGE } from "../routes.js";
+import { POSTS_PAGE, USER_POSTS_PAGE } from "../routes.js";
 import { goToPage } from "../index.js";
 
 export const initButtonLikeListeners = ({ token, posts }) => {

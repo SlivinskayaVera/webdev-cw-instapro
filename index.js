@@ -72,7 +72,7 @@ export const goToPage = (newPage, data) => {
       // TODO: реализовать получение постов юзера из API
       const appEl = document.getElementById("app");
 
-      renderUserPage( { appEl, data } );
+      renderUserPage( { appEl, userId: data.userId } );
       console.log("Открываю страницу пользователя: ", data.userId);
       page = USER_POSTS_PAGE;
       posts = [];
@@ -124,7 +124,7 @@ const renderApp = () => {
 
   if (page === USER_POSTS_PAGE) {
     // TODO: реализовать страницу фотографию пользвателя
-    appEl.innerHTML = "Здесь будет страница фотографий пользователя";
+    goToPage(LOADING_PAGE);
     return;
   }
 }

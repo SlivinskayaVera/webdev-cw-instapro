@@ -44,6 +44,42 @@ export const renderPosts = ({posts}) => {
     return postsHTML;
 };
 
+export const renderPostsUser = ({posts}) => {
+
+  const postsHTML = posts
+      .map((post, index) => {
+          // const correctDate = format(
+          //     new Date(comment.date),
+          //     "yyyy-MM-dd hh.mm.ss",
+          // );
+
+
+          return `<li class="post">
+          <div class="post-image-container">
+              <img class="post-image" src="${post.imageUrl}">
+          </div>
+          <div class="post-likes">
+              <button data-post-id="{post.id}" data-index="${index}" class="like-button">
+                  <img src="./assets/images/like-active.svg">
+              </button>
+              <p class="post-likes-text">
+                  Нравится: <strong>${post.likes.length}</strong>
+              </p>
+          </div>
+          <p class="post-text">
+              <span class="user-name">${post.user.name}</span>
+              ${post.description}
+          </p>
+          <p class="post-date">
+              19 минут назад
+          </p>
+      </li>`;
+      })
+      .join("");
+
+  return postsHTML;
+};
+
 
 export function renderPostsPageComponent({ appEl }) {
 

@@ -1,33 +1,38 @@
-import { user, getToken } from "../index.js";
+import { getToken } from "../index.js";
 import { getUsersPosts } from "../api.js";
-import { renderPosts } from './posts-page-component.js';
+import { renderPostsUser } from './posts-page-component.js';
 import { renderHeaderComponent } from "./header-component.js";
-import { initButtonLikeListeners } from "../components/like-post.js"
+import { initButtonLikeListeners } from "../components/like-post.js";
 
 
-export function renderUserPage({ appEl, data }) {
+export function renderUserPage({ appEl, userId }) {
     let token = getToken();
   
-    getUsersPosts({ token, id: data.userId })
+    getUsersPosts({ token, id: userId })
       .then((userData) => {
         return userData.posts;
       })
       .then((posts) => {
         renderHTML(posts, appEl, token);
       });
-  
 }
 
 const renderHTML = (posts, appEl, token) => {
 
-    const postsUser = renderPosts({ posts });
+    const postsUser = renderPostsUser({ posts });
+
+    console.log(posts);
+
+    const avaUser = posts[0].user.imageUrl;
+    const nameUser = posts[0].user.name;
+
 
     const appHtml = `
     <div class="page-container">
         <div class="header-container"></div>
         <div class="posts-user-header">
-            <img src="${user.imageUrl}" class="posts-user-header__user-image">
-            <p class="posts-user-header__user-name">${user.name}</p>
+            <img src="${avaUser}" class="posts-user-header__user-image">
+            <p class="posts-user-header__user-name">${nameUser}</p>
         </div>
         <ul class="posts">${postsUser}</ul>
         <br>
