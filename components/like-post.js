@@ -2,7 +2,7 @@ import { setLike, setDislike } from "../api.js";
 import { POSTS_PAGE, USER_POSTS_PAGE } from "../routes.js";
 import { goToPage } from "../index.js";
 
-export const initButtonLikeListeners = ({ token, posts }) => {
+export const initButtonLikeListeners = ({ token, posts, flagPosts }) => {
   const buttonsLikeElement = document.querySelectorAll(".like-button");
 
   for (const buttonLikeElement of buttonsLikeElement) {
@@ -19,11 +19,14 @@ export const initButtonLikeListeners = ({ token, posts }) => {
 
       if (post.isLiked === true) {
         setDislike({ id, token }).then(() => {
-          goToPage(POSTS_PAGE);
+            flagPosts ? goToPage(USER_POSTS_PAGE) : goToPage(POSTS_PAGE);
+        //   goToPage(POSTS_PAGE);
         });
       } else {
         setLike({ id, token }).then(() => {
-          goToPage(POSTS_PAGE);
+            flagPosts ? goToPage(USER_POSTS_PAGE) : goToPage(POSTS_PAGE);
+
+        //   goToPage(POSTS_PAGE);
         });
       }
     });

@@ -45,7 +45,10 @@ const renderHTML = (posts, appEl, token) => {
         element: document.querySelector(".header-container"),
       });
 
-    initButtonLikeListeners({ token, posts });
+    
+      let flagPosts = true;
+
+    initButtonLikeListeners({ token, posts, flagPosts });
 };
 
 
