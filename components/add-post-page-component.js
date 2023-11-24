@@ -1,4 +1,4 @@
-import { user, getToken, goToPage } from "../index.js";
+import { getToken, goToPage } from "../index.js";
 import { uploadImage, addPost } from "../api.js";
 import { POSTS_PAGE, LOADING_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";

@@ -6,9 +6,9 @@ import { formatDistanceToNow } from "date-fns";
 import { ru } from "date-fns/locale";
 
 
-const getWhoLiked = (user, post) => {
+export const getWhoLiked = (user, post, likesList) => {
   let likersList = [];
-  const namesLikers = post.likes;
+  const namesLikers = likesList ? likesList : post.likes;
   namesLikers.forEach((element) => likersList.push(element.name));
 
   if (!user) {
@@ -39,6 +39,9 @@ export const renderPosts = ({ posts }) => {
 
       let names = getWhoLiked(user, post);
 
+      const redHeart = './assets/images/like-active.svg';
+      const blackHeart = './assets/images/like-not-active.svg';
+
       return `<li class="post">
             <div class="post-header" data-user-id="${post.user.id}">
                 <img src="${post.user.imageUrl}" class="post-header__user-image">
@@ -49,9 +52,9 @@ export const renderPosts = ({ posts }) => {
             </div>
             <div class="post-likes">
                 <button data-post-id="{post.id}" data-index="${index}" class="like-button">
-                    <img src="./assets/images/like-active.svg">
+                    <img class="like-img" data-index="${index}" src="${post.isLiked ? redHeart : blackHeart}">
                 </button>
-                <p class="post-likes-text">
+                <p class="post-likes-text" data-index="${index}">
                     Нравится: <strong>${names}</strong>
                 </p>
             </div>
@@ -76,6 +79,9 @@ export const renderPostsUser = ({ posts }) => {
         locale: ru,
       });
 
+      const redHeart = './assets/images/like-active.svg';
+      const blackHeart = './assets/images/like-not-active.svg';
+
       let names = getWhoLiked(user, post);
 
       return `<li class="post">
@@ -84,9 +90,9 @@ export const renderPostsUser = ({ posts }) => {
           </div>
           <div class="post-likes" data-user-id="${post.user.id}">
               <button data-post-id="{post.id}" data-user-id="${post.user.id}" data-index="${index}" class="like-button">
-                  <img src="./assets/images/like-active.svg">
+              <img class="like-img" data-index="${index}" src="${post.isLiked ? redHeart : blackHeart}">
               </button>
-              <p class="post-likes-text">
+              <p class="post-likes-text" data-index="${index}">
                   Нравится: <strong>${names}</strong>
               </p>
           </div>
