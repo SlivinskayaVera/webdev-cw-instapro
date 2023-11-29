@@ -4,6 +4,7 @@ import { posts, goToPage, getToken, user } from "../index.js";
 import { initButtonLikeListeners } from "./like-post.js";
 import { formatDistanceToNow } from "date-fns";
 import { ru } from "date-fns/locale";
+import { initDeleteButtonListener } from './delete-post.js'
 
 
 export const getWhoLiked = (user, post, likesList) => {
@@ -42,7 +43,7 @@ export const renderPosts = ({ posts }) => {
       const redHeart = './assets/images/like-active.svg';
       const blackHeart = './assets/images/like-not-active.svg';
 
-      return `<li class="post">
+      return `<li class="post" data-index="${index}">
             <div class="post-header" data-user-id="${post.user.id}">
                 <img src="${post.user.imageUrl}" class="post-header__user-image">
                 <p class="post-header__user-name">${post.user.name}</p>
@@ -65,6 +66,9 @@ export const renderPosts = ({ posts }) => {
             <p class="post-date">
           ${correctDate}
             </p>
+            <button class="delete-button" data-index="${index}" data-id="${post.id}" style="display: ${user && user.name === post.user.name ? "block;" : "none;"}">
+              Удалить пост
+            </button>
         </li>`;
     })
     .join("");
@@ -84,7 +88,7 @@ export const renderPostsUser = ({ posts }) => {
 
       let names = getWhoLiked(user, post);
 
-      return `<li class="post">
+      return `<li class="post" data-index="${index}" id="${index}">
           <div class="post-image-container">
               <img class="post-image" src="${post.imageUrl}">
           </div>
@@ -103,6 +107,9 @@ export const renderPostsUser = ({ posts }) => {
           <p class="post-date">
           ${correctDate}
           </p>
+          <button class="delete-button" data-index="${index}" data-id="${post.id}" style="display: ${user && user.name === post.user.name ? "block;" : "none;"}">
+              Удалить пост
+          </button>
       </li>`;
     })
     .join("");
@@ -110,12 +117,10 @@ export const renderPostsUser = ({ posts }) => {
   return postsHTML;
 };
 
+
 export function renderPostsPageComponent({ appEl }) {
   const postsList = renderPosts({ posts });
-  /**
-   * TODO: чтобы отформатировать дату создания поста в виде "19 минут назад"
-   * можно использовать https://date-fns.org/v2.29.3/docs/formatDistanceToNow
-   */
+
   const appHtml = `
               <div class="page-container">
                 <div class="header-container"></div>
@@ -133,6 +138,7 @@ export function renderPostsPageComponent({ appEl }) {
   let token = getToken();
 
   initButtonLikeListeners({ token, posts, appEl });
+  initDeleteButtonListener({ token });
 
   for (let userEl of document.querySelectorAll(".post-header")) {
     userEl.addEventListener("click", () => {
