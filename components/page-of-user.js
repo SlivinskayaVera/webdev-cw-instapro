@@ -21,11 +21,8 @@ const renderHTML = (posts, appEl, token) => {
 
     const postsUser = renderPostsUser({ posts });
 
-    console.log(posts);
-
     const avaUser = posts[0].user.imageUrl;
     const nameUser = posts[0].user.name;
-
 
     const appHtml = `
     <div class="page-container">

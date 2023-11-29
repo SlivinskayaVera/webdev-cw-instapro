@@ -96,6 +96,14 @@
   cursor: pointer;
 }
 
+.delete-button {
+  border: black 1px solid;
+  border-radius: 5px;
+  padding: 3px;
+  margin: 8px 0px;
+  cursor: pointer;
+}
+
 .user-name {
   font-weight: 500;
 }

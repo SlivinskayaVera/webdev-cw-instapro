@@ -4,11 +4,12 @@ import { posts, goToPage, getToken, user } from "../index.js";
 import { initButtonLikeListeners } from "./like-post.js";
 import { formatDistanceToNow } from "date-fns";
 import { ru } from "date-fns/locale";
+import { initDeleteButtonListener } from './delete-post.js'
 
 
-const getWhoLiked = (user, post) => {
+export const getWhoLiked = (user, post, likesList) => {
   let likersList = [];
-  const namesLikers = post.likes;
+  const namesLikers = likesList ? likesList : post.likes;
   namesLikers.forEach((element) => likersList.push(element.name));
 
   if (!user) {
@@ -39,7 +40,10 @@ export const renderPosts = ({ posts }) => {
 
       let names = getWhoLiked(user, post);
 
-      return `<li class="post">
+      const redHeart = './assets/images/like-active.svg';
+      const blackHeart = './assets/images/like-not-active.svg';
+
+      return `<li class="post" data-index="${index}">
             <div class="post-header" data-user-id="${post.user.id}">
                 <img src="${post.user.imageUrl}" class="post-header__user-image">
                 <p class="post-header__user-name">${post.user.name}</p>
@@ -49,9 +53,9 @@ export const renderPosts = ({ posts }) => {
             </div>
             <div class="post-likes">
                 <button data-post-id="{post.id}" data-index="${index}" class="like-button">
-                    <img src="./assets/images/like-active.svg">
+                    <img class="like-img" data-index="${index}" src="${post.isLiked ? redHeart : blackHeart}">
                 </button>
-                <p class="post-likes-text">
+                <p class="post-likes-text" data-index="${index}">
                     Нравится: <strong>${names}</strong>
                 </p>
             </div>
@@ -62,6 +66,9 @@ export const renderPosts = ({ posts }) => {
             <p class="post-date">
           ${correctDate}
             </p>
+            <button class="delete-button" data-index="${index}" data-id="${post.id}" style="display: ${user && user.name === post.user.name ? "block;" : "none;"}">
+              Удалить пост
+            </button>
         </li>`;
     })
     .join("");
@@ -76,17 +83,20 @@ export const renderPostsUser = ({ posts }) => {
         locale: ru,
       });
 
+      const redHeart = './assets/images/like-active.svg';
+      const blackHeart = './assets/images/like-not-active.svg';
+
       let names = getWhoLiked(user, post);
 
-      return `<li class="post">
+      return `<li class="post" data-index="${index}" id="${index}">
           <div class="post-image-container">
               <img class="post-image" src="${post.imageUrl}">
           </div>
           <div class="post-likes" data-user-id="${post.user.id}">
               <button data-post-id="{post.id}" data-user-id="${post.user.id}" data-index="${index}" class="like-button">
-                  <img src="./assets/images/like-active.svg">
+              <img class="like-img" data-index="${index}" src="${post.isLiked ? redHeart : blackHeart}">
               </button>
-              <p class="post-likes-text">
+              <p class="post-likes-text" data-index="${index}">
                   Нравится: <strong>${names}</strong>
               </p>
           </div>
@@ -97,6 +107,9 @@ export const renderPostsUser = ({ posts }) => {
           <p class="post-date">
           ${correctDate}
           </p>
+          <button class="delete-button" data-index="${index}" data-id="${post.id}" style="display: ${user && user.name === post.user.name ? "block;" : "none;"}">
+              Удалить пост
+          </button>
       </li>`;
     })
     .join("");
@@ -104,12 +117,10 @@ export const renderPostsUser = ({ posts }) => {
   return postsHTML;
 };
 
+
 export function renderPostsPageComponent({ appEl }) {
   const postsList = renderPosts({ posts });
-  /**
-   * TODO: чтобы отформатировать дату создания поста в виде "19 минут назад"
-   * можно использовать https://date-fns.org/v2.29.3/docs/formatDistanceToNow
-   */
+
   const appHtml = `
               <div class="page-container">
                 <div class="header-container"></div>
@@ -127,6 +138,7 @@ export function renderPostsPageComponent({ appEl }) {
   let token = getToken();
 
   initButtonLikeListeners({ token, posts, appEl });
+  initDeleteButtonListener({ token });
 
   for (let userEl of document.querySelectorAll(".post-header")) {
     userEl.addEventListener("click", () => {
